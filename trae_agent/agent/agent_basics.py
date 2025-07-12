@@ -88,3 +88,13 @@ class AgentError(Exception):
 
     def __repr__(self) -> str:
         return f"<AgentError message={self.message!r}>"
+
+
+@dataclass
+class AgentMemory:
+    """
+    AgentMemory saves memory content for an agent to reference. It should be used as a list of AgentMemory entries with short and long content.
+    """
+
+    long_memory: str
+    summary: str

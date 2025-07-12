@@ -11,7 +11,7 @@ from ..utils.config import Config, ModelParameters
 from ..utils.llm_basics import LLMMessage, LLMResponse
 from ..utils.llm_client import LLMClient
 from ..utils.trajectory_recorder import TrajectoryRecorder
-from .agent_basics import AgentExecution, AgentState, AgentStep
+from .agent_basics import AgentExecution, AgentMemory, AgentState, AgentStep
 
 
 class Agent(ABC):
@@ -49,6 +49,9 @@ class Agent(ABC):
 
         # Trajectory recorder
         self._trajectory_recorder: TrajectoryRecorder | None = None
+
+        # agent memory
+        self._memory: list[AgentMemory] | None = None
 
     @classmethod
     def from_config(cls, config: Config) -> "Agent":
