@@ -16,13 +16,22 @@ class Agent:
         self,
         agent_type: AgentType | str,
         config: Config,
-        trajectory_recorder: TrajectoryRecorder | str,
+        trajectory_file: str | None = None,
         cli_console: CLIConsole | None = None,
     ):
         if isinstance(agent_type, str):
             agent_type = AgentType(agent_type)
         self.agent_type: AgentType = agent_type
-        self.trajectory_recorder: TrajectoryRecorder | str | None = trajectory_recorder
+
+        # Set up trajectory recording
+        if trajectory_file is not None:
+            self.trajectory_file: str = trajectory_file
+            self.trajectory_recorder: TrajectoryRecorder = TrajectoryRecorder(trajectory_file)
+        else:
+            # Auto-generate trajectory file path
+            self.trajectory_recorder = TrajectoryRecorder()
+            self.trajectory_file = self.trajectory_recorder.get_trajectory_path()
+
         match self.agent_type:
             case AgentType.TraeAgent:
                 if config.trae_agent is None:
@@ -33,12 +42,6 @@ class Agent:
 
                 self.agent: TraeAgent = TraeAgent(self.agent_config)
                 self.agent.set_cli_console(cli_console)
-
-        if isinstance(self.trajectory_recorder, str):
-            self.trajectory_file: str = self.trajectory_recorder
-            self.trajectory_recorder = TrajectoryRecorder(self.trajectory_recorder)
-        else:
-            self.trajectory_file = self.trajectory_recorder.trajectory_path.absolute().as_posix()
 
         if cli_console:
             if config.trae_agent.enable_lakeview:

@@ -60,22 +60,6 @@ class TraeAgent(BaseAgent):
         if self.mcp_tools:
             self._tools.extend(self.mcp_tools)
 
-    def setup_trajectory_recording(self, trajectory_path: str | None = None) -> str:
-        """Set up trajectory recording for this agent.
-
-        Args:
-            trajectory_path: Path to save trajectory file. If None, generates default path.
-
-        Returns:
-            The path where trajectory will be saved.
-        """
-        from ..utils.trajectory_recorder import TrajectoryRecorder
-
-        recorder = TrajectoryRecorder(trajectory_path)
-        self.set_trajectory_recorder(recorder)
-
-        return recorder.get_trajectory_path()
-
     async def discover_mcp_tools(self):
         if self.mcp_servers_config:
             for mcp_server_name, mcp_server_config in self.mcp_servers_config.items():

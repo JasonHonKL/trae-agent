@@ -46,12 +46,6 @@ class TestTraeAgentExtended(unittest.TestCase):
     def tearDown(self):
         self.llm_client_patcher.stop()
 
-    @patch("trae_agent.utils.trajectory_recorder.TrajectoryRecorder")
-    def test_trajectory_setup(self, mock_recorder):
-        self.agent.task = "test task"
-        _ = self.agent.setup_trajectory_recording()
-        self.assertIsNotNone(self.agent.trajectory_recorder)
-
     def test_new_task_initialization(self):
         with self.assertRaises(AgentError):
             self.agent.new_task("test", {})  # Missing required params

@@ -30,7 +30,12 @@ class TrajectoryRecorder:
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             trajectory_path = f"trajectories/trajectory_{timestamp}.json"
 
-        self.trajectory_path: Path = Path(trajectory_path)
+        self.trajectory_path: Path = Path(trajectory_path).resolve()
+        try:
+            self.trajectory_path.parent.mkdir(parents=True, exist_ok=True)
+        except Exception:
+            print("Error creating trajectory directory. Trajectories may not be properly saved.")
+
         self.trajectory_data: dict[str, Any] = {
             "task": "",
             "start_time": "",

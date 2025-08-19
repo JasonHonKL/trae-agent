@@ -14,12 +14,10 @@ class TestCli(unittest.TestCase):
     @patch("trae_agent.cli.Agent")
     @patch("trae_agent.cli.asyncio.run")
     @patch("trae_agent.cli.Config.create")
-    @patch("trae_agent.cli.TrajectoryRecorder")
     @patch("trae_agent.cli.ConsoleFactory.create_console")
     def test_run_with_long_prompt(
         self,
         mock_create_console,
-        mock_trajectory_recorder,
         mock_config_create,
         mock_asyncio_run,
         mock_agent_class,
@@ -52,12 +50,10 @@ class TestCli(unittest.TestCase):
     @patch("trae_agent.cli.Agent")
     @patch("trae_agent.cli.asyncio.run")
     @patch("trae_agent.cli.Config.create")
-    @patch("trae_agent.cli.TrajectoryRecorder")
     @patch("trae_agent.cli.ConsoleFactory.create_console")
     def test_run_with_file_argument(
         self,
         mock_create_console,
-        mock_trajectory_recorder,
         mock_config_create,
         mock_asyncio_run,
         mock_agent_class,
@@ -113,14 +109,12 @@ class TestCli(unittest.TestCase):
     @patch("trae_agent.cli.resolve_config_file", return_value="test_config.yaml")
     @patch("trae_agent.cli.Agent")
     @patch("trae_agent.cli.Config.create")
-    @patch("trae_agent.cli.TrajectoryRecorder")
     @patch("trae_agent.cli.ConsoleFactory.create_console")
     @patch("trae_agent.cli.os.chdir", side_effect=FileNotFoundError("No such file or directory"))
     def test_run_with_nonexistent_working_dir(
         self,
         mock_chdir,
         mock_create_console,
-        mock_trajectory_recorder,
         mock_config_create,
         mock_agent_class,
         mock_resolve_config_file,
@@ -147,12 +141,10 @@ class TestCli(unittest.TestCase):
     @patch("trae_agent.cli.Agent")
     @patch("trae_agent.cli.asyncio.run")
     @patch("trae_agent.cli.Config.create")
-    @patch("trae_agent.cli.TrajectoryRecorder")
     @patch("trae_agent.cli.ConsoleFactory.create_console")
     def test_run_with_string_that_is_also_a_filename(
         self,
         mock_create_console,
-        mock_trajectory_recorder,
         mock_config_create,
         mock_asyncio_run,
         mock_agent_class,

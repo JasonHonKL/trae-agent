@@ -18,7 +18,6 @@ from rich.table import Table
 from trae_agent.agent import Agent
 from trae_agent.utils.cli import CLIConsole, ConsoleFactory, ConsoleMode, ConsoleType
 from trae_agent.utils.config import Config, TraeAgentConfig
-from trae_agent.utils.trajectory_recorder import TrajectoryRecorder
 
 # Load environment variables
 _ = load_dotenv()
@@ -148,11 +147,6 @@ def run(
         console.print("[red]Error: agent_type is required.[/red]")
         sys.exit(1)
 
-    if trajectory_file:
-        trajectory_recorder = TrajectoryRecorder(trajectory_file)
-    else:
-        trajectory_recorder = TrajectoryRecorder()
-
     # Create CLI Console
     console_mode = ConsoleMode.RUN
     if console_type:
@@ -170,7 +164,7 @@ def run(
     if selected_console_type == ConsoleType.RICH and hasattr(cli_console, "set_initial_task"):
         cli_console.set_initial_task(task)
 
-    agent = Agent(agent_type, config, trajectory_recorder, cli_console)
+    agent = Agent(agent_type, config, trajectory_file, cli_console)
 
     # Change working directory if specified
     if working_dir:
@@ -205,24 +199,16 @@ def run(
         # Agent will handle starting the appropriate console
         _ = asyncio.run(agent.run(task, task_args))
 
-        console.print(
-            f"\n[green]Trajectory saved to: {trajectory_recorder.trajectory_path.absolute().as_posix()}[/green]"
-        )
+        console.print(f"\n[green]Trajectory saved to: {agent.trajectory_file}[/green]")
 
     except KeyboardInterrupt:
         console.print("\n[yellow]Task execution interrupted by user[/yellow]")
-        if trajectory_recorder:
-            console.print(
-                f"[blue]Partial trajectory saved to: {trajectory_recorder.trajectory_path.absolute().as_posix()}[/blue]"
-            )
+        console.print(f"[blue]Partial trajectory saved to: {agent.trajectory_file}[/blue]")
         sys.exit(1)
     except Exception as e:
         console.print(f"\n[red]Unexpected error: {e}[/red]")
         console.print(traceback.format_exc())
-        if trajectory_recorder:
-            console.print(
-                f"[blue]Trajectory saved to: {trajectory_recorder.trajectory_path.absolute().as_posix()}[/blue]"
-            )
+        console.print(f"[blue]Trajectory saved to: {agent.trajectory_file}[/blue]")
         sys.exit(1)
 
 
@@ -300,18 +286,15 @@ def interactive(
         console_type=selected_console_type, lakeview_config=config.lakeview, mode=console_mode
     )
 
-    if trajectory_file:
-        trajectory_recorder = TrajectoryRecorder(trajectory_file)
-    else:
-        trajectory_recorder = TrajectoryRecorder()
-        trajectory_file = trajectory_recorder.trajectory_path.absolute().as_posix()
-
     if not agent_type:
         console.print("[red]Error: agent_type is required.[/red]")
         sys.exit(1)
 
     # Create agent
-    agent = Agent(agent_type, config, trajectory_recorder, cli_console)
+    agent = Agent(agent_type, config, trajectory_file, cli_console)
+
+    # Get the actual trajectory file path (in case it was auto-generated)
+    trajectory_file = agent.trajectory_file
 
     # For simple console, use traditional interactive loop
     if selected_console_type == ConsoleType.SIMPLE:
