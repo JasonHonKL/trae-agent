@@ -277,7 +277,7 @@ impl Layout {
         frame.render_widget(popup_paragraph, popup_area);
     }
 
-    fn render_settings_popup(frame: &mut Frame, area: Rect, state: &AppState, settings_editor: &Option<SettingsEditor>) {
+    fn render_settings_popup(frame: &mut Frame, area: Rect, _state: &AppState, settings_editor: &Option<SettingsEditor>) {
         // Calculate popup size (larger than quit popup for form fields)
         let popup_width = 60;
         let popup_height = 16;
